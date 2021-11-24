@@ -27,7 +27,7 @@ Example output:
 "randan" v1.0.0 by C.S. Morrison
 
   Usage: ./randan [count]
-  Generating 1 pseudorandom number using 4 implementations
+  Generating 10 pseudorandom numbers using 4 implementations
   with uniform distribution within [0, 1000000)
 
     rand()	  random()	 lrand48()	std::mt19937	
