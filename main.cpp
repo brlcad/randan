@@ -41,13 +41,14 @@ int main(int ac, char *av[]) {
     count = abs(atoi(av[1]));
   }
 
-  std::string names[] = {"rand", "random", "rand48", "mt19937"};
+  std::string names[] = {"rand()", "random()", "lrand48()", "std::mt19937"};
   void (*seed[])(long) = {seed_rand, seed_random, seed_rand48, seed_mt19937, nullptr};
   int (*rfunc[])(void) = {rand_rand, rand_random, rand_rand48, rand_mt19937, nullptr};
 
-  for(int i = 0; seed[i] != nullptr; i++) {
-    seed[i](time(0));
-  }
+  /* print intro */
+  std::cerr << "\"randan\" by C.S. Morrison" << std::endl << std::endl;
+  std::cerr << "  Usage: " << av[0] << " [count]" << std::endl;
+  std::cerr << "  Generating " << count << " pseudorandom number" << ((count!=1)? "s " : " ") << "using " << sizeof(names) / sizeof(names[0]) << " implementations" << std::endl << std::endl;
 
   /* print headers */
   for(int i = 0; rfunc[i] != nullptr; i++) {
@@ -64,6 +65,12 @@ int main(int ac, char *av[]) {
   }
   std::cerr << std::endl;
 
+  /* seed all the generators */
+  for(int i = 0; seed[i] != nullptr; i++) {
+    seed[i](time(0));
+  }
+
+  /* generate all the randoms */
   while (count--) {
     for(int i = 0; rfunc[i] != nullptr; i++) {
       std::cout << std::setw(10) << rfunc[i]() << std::tab;
