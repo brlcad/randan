@@ -7,11 +7,12 @@
 #define DECLARE_C(x) extern "C" { \
   void seed_##x(long seed); \
   int rand_##x(void); \
-}
+} \
+extern int __x
 
 #define DECLARE_CPP(x) \
   void seed_##x(long seed); \
-  int rand_##x(void);
+  int rand_##x(void)
 
 
 DECLARE_C(rand);
@@ -46,7 +47,7 @@ int main(int ac, char *av[]) {
   int (*rfunc[])(void) = {rand_rand, rand_random, rand_rand48, rand_mt19937, nullptr};
 
   /* print intro */
-  std::cerr << "\"randan\" by C.S. Morrison" << std::endl << std::endl;
+  std::cerr << "\"randan\" v1.0.0 by C.S. Morrison" << std::endl << std::endl;
   std::cerr << "  Usage: " << av[0] << " [count]" << std::endl;
   std::cerr << "  Generating " << count << " pseudorandom number" << ((count!=1)? "s " : " ") << "using " << sizeof(names) / sizeof(names[0]) << " implementations" << std::endl << std::endl;
 
