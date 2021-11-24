@@ -49,7 +49,8 @@ int main(int ac, char *av[]) {
   /* print intro */
   std::cerr << "\"randan\" v1.0.0 by C.S. Morrison" << std::endl << std::endl;
   std::cerr << "  Usage: " << av[0] << " [count]" << std::endl;
-  std::cerr << "  Generating " << count << " pseudorandom number" << ((count!=1)? "s " : " ") << "using " << sizeof(names) / sizeof(names[0]) << " implementations" << std::endl << std::endl;
+  std::cerr << "  Generating " << count << " pseudorandom number" << ((count!=1)? "s " : " ") << "using " << sizeof(names) / sizeof(names[0]) << " implementations" << std::endl;
+  std::cerr << "  with uniform distribution within [0, 1000000)" << std::endl << std::endl;
 
   /* print headers */
   for(int i = 0; rfunc[i] != nullptr; i++) {
