@@ -19,6 +19,8 @@ DECLARE_C(rand);
 DECLARE_C(random);
 DECLARE_C(rand48);
 DECLARE_CPP(mt19937);
+DECLARE_C(bn_rand);
+DECLARE_C(bn_randhalf);
 
 
 namespace std {
@@ -42,9 +44,9 @@ int main(int ac, char *av[]) {
     count = abs(atoi(av[1]));
   }
 
-  std::string names[] = {"rand()", "random()", "lrand48()", "std::mt19937"};
-  void (*seed[])(long) = {seed_rand, seed_random, seed_rand48, seed_mt19937, nullptr};
-  int (*rfunc[])(void) = {rand_rand, rand_random, rand_rand48, rand_mt19937, nullptr};
+  std::string names[] = {"rand()", "random()", "lrand48()", "std::mt19937", "BN_RANDOM", "bn_randhalf"};
+  void (*seed[])(long) = {seed_rand, seed_random, seed_rand48, seed_mt19937, seed_bn_rand, seed_bn_randhalf, nullptr};
+  int (*rfunc[])(void) = {rand_rand, rand_random, rand_rand48, rand_mt19937, rand_bn_rand, rand_bn_randhalf, nullptr};
 
   /* print intro */
   std::cerr << "\"randan\" v1.0.0 by C.S. Morrison" << std::endl << std::endl;
