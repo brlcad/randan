@@ -27,12 +27,19 @@ target_compile_options(randan PRIVATE
    $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -pedantic -Werror -g -ggdb>
    )
 
-set(BRLCAD_INCLUDE_DIRS
-  ${PROJECT_SOURCE_DIR}/../brlcad.main/include
-  ${PROJECT_SOURCE_DIR}/../brlcad.main/.build/include
-)
-include_directories(AFTER SYSTEM "${BRLCAD_INCLUDE_DIRS}")
-target_link_libraries(randan ${PROJECT_SOURCE_DIR}/../brlcad.main/.build/lib/libbn.so)
+if (NOT BRLCAD_ROOT)
+  set (BRLCAD_ROOT /usr/brlcad)
+endif (NOT BRLCAD_ROOT)
+find_library(BRLCAD_LIBRARIES bn PATHS ${BRLCAD_ROOT}/lib)
+if (BRLCAD_LIBRARIES)
+  message("Enabling BRL-CAD random numbers")
+  set(BRLCAD_INCLUDE_DIRS
+    ${BRLCAD_ROOT}/include
+    ${BRLCAD_ROOT}/../include
+  )
+  target_include_directories(randan PUBLIC "${BRLCAD_INCLUDE_DIRS}")
+  target_link_libraries(randan "${BRLCAD_LIBRARIES}")
+endif (BRLCAD_LIBRARIES)
 
 install(TARGETS randan)
 
