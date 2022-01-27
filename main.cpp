@@ -87,17 +87,44 @@ int main(int ac, char *av[]) {
   /* generate all the randoms */
   double *totals = new double[generators];
   double *nums = new double[generators * count];
+  double *mins = new double[generators];
+  double *maxs = new double[generators];
+  for(size_t i = 0; i < generators; i++) {
+    maxs[i] = nums[i] = 0.0;
+    mins[i] = 1000000.0;
+  }
   
   for(size_t i = 0; i < generators; i++) {
     for (int j = 0; j < count; j++) {
       nums[(i*count)+j] = rfunc[i]();
+    }
+    for (int j = 0; j < count; j++) {
       totals[i] += nums[(i*count)+j] / 1000000.0;
+    }
+    for (int j = 0; j < count; j++) {
+      if (nums[(i*count)+j] < mins[i])
+	mins[i] = nums[(i*count)+j];
+      if (nums[(i*count)+j] > maxs[i])
+	maxs[i] = nums[(i*count)+j];
     }
   }
   
   /* print a summary */
+  std::cout << "%DEV" << std::endl;
   for(size_t i = 0; i < generators; i++) {
-    std::cout << std::setw(3) << fabs(totals[i] - ((double)count/2.0)) / (double)count* 100.0 << std::tab;
+    std::cout << std::setw(3) << fabs(totals[i] - ((double)count/2.0)) / (double)count * 100.0 << std::tab;
+  }
+  std::cout << std::endl;
+
+  std::cout << "MINS" << std::endl;
+  for(size_t i = 0; i < generators; i++) {
+    std::cout << std::setw(3) << mins[i] << std::tab;
+  }
+  std::cout << std::endl;
+
+  std::cout << "MAXS" << std::endl;
+  for(size_t i = 0; i < generators; i++) {
+    std::cout << std::setw(3) << maxs[i] << std::tab;
   }
   std::cout << std::endl;
 
