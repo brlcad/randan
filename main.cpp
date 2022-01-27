@@ -1,4 +1,5 @@
 #include <ctime>
+#include <cmath>
 #include <iostream>
 #include <iomanip>
 #include <vector>
@@ -43,23 +44,32 @@ int main(int ac, char *av[]) {
   if (ac == 2) {
     count = abs(atoi(av[1]));
   }
+  if (count < 0) {
+    std::cout << "Usage: " << av[0] << " [count]" << std::endl;
+    return 2;
+  }
 
   std::string names[] = {"rand()", "random()", "lrand48()", "std::mt19937", "BN_RANDOM", "bn_randhalf"};
   void (*seed[])(long) = {seed_rand, seed_random, seed_rand48, seed_mt19937, seed_bn_rand, seed_bn_randhalf, nullptr};
   int (*rfunc[])(void) = {rand_rand, rand_random, rand_rand48, rand_mt19937, rand_bn_rand, rand_bn_randhalf, nullptr};
+  size_t generators = 0;
+  for(size_t i = 0; seed[i] != nullptr; i++) {
+    generators++;
+   }
+  
 
   /* print intro */
   std::cerr << "\"randan\" v1.0.0 by C.S. Morrison" << std::endl << std::endl;
   std::cerr << "  Usage: " << av[0] << " [count]" << std::endl;
-  std::cerr << "  Generating " << count << " pseudorandom number" << ((count!=1)? "s " : " ") << "using " << sizeof(names) / sizeof(names[0]) << " implementations" << std::endl;
+  std::cerr << "  Generating " << count << " pseudorandom number" << ((count!=1)? "s " : " ") << "using " << generators << " implementations" << std::endl;
   std::cerr << "  with uniform distribution within [0, 1000000)" << std::endl << std::endl;
 
   /* print headers */
-  for(int i = 0; rfunc[i] != nullptr; i++) {
+  for(size_t i = 0; i < generators; i++) {
     std::cerr << std::setw(10) << names[i] << std::tab;
   }
   std::cerr << std::endl;
-  for(size_t i = 0; rfunc[i] != nullptr; i++) {
+  for(size_t i = 0; i < generators; i++) {
     size_t maxj = (names[i].length()) < 10 ? 10 : names[i].length();
     for(size_t j = 0; j < maxj; j++) {
       std::cerr << "-";
@@ -70,17 +80,29 @@ int main(int ac, char *av[]) {
   std::cerr << std::endl;
 
   /* seed all the generators */
-  for(int i = 0; seed[i] != nullptr; i++) {
+  for(size_t i = 0; i < generators; i++) {
     seed[i](time(0));
   }
 
   /* generate all the randoms */
-  while (count--) {
-    for(int i = 0; rfunc[i] != nullptr; i++) {
-      std::cout << std::setw(10) << rfunc[i]() << std::tab;
+  double *totals = new double[generators];
+  double *nums = new double[generators * count];
+  
+  for(size_t i = 0; i < generators; i++) {
+    for (int j = 0; j < count; j++) {
+      nums[(i*count)+j] = rfunc[i]();
+      totals[i] += nums[(i*count)+j] / 1000000.0;
     }
-    std::cout << std::endl;
   }
+  
+  /* print a summary */
+  for(size_t i = 0; i < generators; i++) {
+    std::cout << std::setw(3) << fabs(totals[i] - ((double)count/2.0)) / (double)count* 100.0 << std::tab;
+  }
+  std::cout << std::endl;
+
+  delete [] totals;
+  delete [] nums;
 
   return 0;
 
