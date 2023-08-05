@@ -1,8 +1,8 @@
-#include <ctime>
 #include <cmath>
 #include <iostream>
 #include <iomanip>
 #include <vector>
+#include <ctime>
 
 
 #define DECLARE_C(x) extern "C" { \
@@ -130,6 +130,24 @@ int main(int ac, char *av[]) {
 
   delete [] totals;
   delete [] nums;
+
+  /* print footers */
+  std::cerr << std::endl;
+  std::cerr << "Standard Deviation:" << std::endl;
+  for(int i = 0; rfunc[i] != nullptr; i++) {
+    std::cerr << std::setw(10) << names[i] << std::tab;
+  }
+  std::cerr << std::endl;
+  for(size_t i = 0; rfunc[i] != nullptr; i++) {
+    size_t maxj = (names[i].length()) < 10 ? 10 : names[i].length();
+    for(size_t j = 0; j < maxj; j++) {
+      std::cerr << "-";
+    }
+    if (rfunc[i+1] != nullptr)
+      std::cerr << std::tab;
+  }
+  std::cerr << std::endl;
+
 
   return 0;
 
